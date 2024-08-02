@@ -9,7 +9,7 @@ import { readMembers } from "../actions";
 import { IPermission } from "@/lib/types";
 
  
-export default async function ListOfMembers() {
+export default async function ListOfExcos() {
 	const {data: permissions} = await readMembers()
 
 	const user = useUserStore.getState().user;
