@@ -1,4 +1,5 @@
 
+
 export const States = [
     {
       "code": "AB",
@@ -40101,5 +40102,225 @@ export const States = [
           ]
         }
       ]
+    }
+  ]
+
+
+  export const CongressType = [
+    {
+      "Level": "LGA"
+    },
+    {
+      "Level": "State"
+    },
+    {
+      "Level": "Ward"
+    }
+  ]
+
+  export const Positions = [
+    {
+      "Position": "LGA ASSISTANT PUB. SECRETARY",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA ASSISTANT SECRETARY",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA AUDITOR",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA CHAIRMAN",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA DEPUTY CHAIRMAN",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA EX-OFFICIO",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA FINANCIAL SECRETARY",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA LEGAL ADVISER",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA ORGANIZING SECRETARY",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA PUBLICITY SECRETARY",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA SECRETARY",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA TREASURER",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA WOMEN LEADER",
+      "Level": "LGA"
+    },
+    {
+      "Position": "LGA YOUTH LEADER",
+      "Level": "LGA"
+    },
+    {
+      "Position": "NATIONAL DELEGATE",
+      "Level": "LGA"
+    },
+    {
+      "Position": "STATE ASSISTANT AUDITOR",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT FIN. SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT LEGAL ADVISER",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT ORG. SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT PUB. SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT TREASURER",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT WOMEN'S LEADER",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ASSISTANT YOUTH LEADER",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE AUDITOR",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE CHAIRMAN",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE DEPUTY CHAIRMAN",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE EX-OFFICIO",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE FINANCIAL SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE LEGAL ADVISER",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE ORGANIZING SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE PUBLICITY SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE SECRETARY",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE TREASURER",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE VICE CHAIRMAN",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE WOMEN LEADER",
+      "Level": "State"
+    },
+    {
+      "Position": "STATE YOUTH LEADER",
+      "Level": "State"
+    },
+    {
+      "Position": "WARD 3-ADHOC",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD ASSISTANT SECRETARY",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD AUDITOR",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD CHAIRMAN",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD DEPUTY CHAIRMAN",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD EX-OFFICIO",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD FINANCIAL SECRETARY",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD LEGAL ADVISER",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD ORGANIZING SECRETARY",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD PUBLICITY SECRETARY",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD SECRETARY",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD TREASURER",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD WOMEN LEADER",
+      "Level": "Ward"
+    },
+    {
+      "Position": "WARD YOUTH LEADER",
+      "Level": "Ward"
     }
   ]

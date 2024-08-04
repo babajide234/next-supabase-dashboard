@@ -8,22 +8,32 @@ import { useUserStore } from "@/lib/store/user";
 import CreateExcos from "./components/create/CreateExcos";
 import SearchExcos from "./components/SearchExcos";
 import ExcosTable from "./components/ExcosTable";
+import { usePermissionsStore } from "@/lib/store/permissions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Excos() {
 
 	const user = useUserStore.getState().user;
-	const isAdmin = user?.user_metadata.role === "admin"
+	const isAdmin = user?.user_metadata.role === "moderator"
+	const permissions = usePermissionsStore.getState().permissions;
+
+	console.log("permissions exco",permissions)
+	// console.log(user)
 	return (
-		<div className="w-full px-3 space-y-5 overflow-y-auto">
-			<h1 className="text-3xl font-bold">Excos</h1>
-			{
-				isAdmin &&
-				<div className="flex gap-2">
-					<SearchExcos />
-					<CreateExcos />
-				</div>
-			}
-			<ExcosTable />
-		</div>
+		<Card>
+			<CardHeader className="gap-5 ">
+				<CardTitle className="text-3xl ">PDP Executives</CardTitle>
+				{
+					isAdmin &&
+					<div className="flex gap-2">
+						<SearchExcos />
+						<CreateExcos permissions={permissions}/>
+					</div>
+				}
+			</CardHeader>
+			<CardContent>
+				<ExcosTable/>
+			</CardContent>
+		</Card>
 	);
 }

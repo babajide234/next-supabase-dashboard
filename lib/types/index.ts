@@ -11,3 +11,19 @@ export type IPermission = {
         name: string
     }
 }
+
+interface ModeratorDetails {
+    id: string;
+    name: string;
+    state: string;
+    created_at: string;
+}
+
+export type ModeratorRecord = {
+    role: "admin" | "user" | "moderator";
+    status: "active" | "resigned";
+    moderator_id: string;
+    created_at: string;
+    id: string;
+    moderators: ModeratorDetails;
+}

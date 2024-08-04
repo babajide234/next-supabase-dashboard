@@ -65,9 +65,9 @@ const Navbar = () => {
                 </Link>
                 <Link
                     href={'/dashboard/excos'}
-                    className="transition-colors text-foreground hover:text-foreground"
+                    className="transition-colors text-foreground hover:text-foreground w-fit"
                 >
-                    Excos
+                    Executives
                 </Link>
 
             </nav>

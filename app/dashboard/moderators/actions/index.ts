@@ -63,5 +63,6 @@ export async function readModerators() {
 	
 	const supabase = await createSupbaseServerClient();
 
-	return await supabase.from('permissions_mod').select('*, moderators(*)')
+	return await supabase.from('permissions_mod').select('*,moderators(*)')
 }
+

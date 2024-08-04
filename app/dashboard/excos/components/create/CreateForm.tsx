@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { CongressType, Positions, States } from "@/lib/data";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,51 +25,66 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { createMember } from "../../actions";
+import { createExecutiveEntry} from "../../actions";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { cn } from "@/lib/utils";
-import { useTransition } from "react";
+import {  useState, useTransition } from "react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { usePermissionsStore } from "@/lib/store/permissions";
 
 const FormSchema = z
 	.object({
-		name: z.string().min(2, {
-			message: "Username must be at least 2 characters.",
-		}),
-		role: z.enum(["user", "admin"]),
-		status: z.enum(["active", "resigned"]),
-		email: z.string().email(),
-		password: z
-			.string()
-			.min(6, { message: "Password should be 6 characters" }),
-		confirm: z
-			.string()
-			.min(6, { message: "Password should be 6 characters" }),
+		name: z.string().min(2),
+		gender: z.string(),
+		phone: z.string(),
+		lga: z.string(),
+		ward: z.string(),
+		type: z.string(),
+		position: z.string(),
 	})
-	.refine((data) => data.confirm === data.password, {
-		message: "Passowrd doesn't match",
-		path: ["confirm"],
-	});
 
-export default function MemberForm() {
+export default function MemberForm({permissions}:{permissions: any}) {
 
 	const [isPending, startTransition] = useTransition();
+	const [wards, setWards] = useState<any[]>([]);
+	const [pos, setPositions] = useState<any[]>([]);
 
-	const roles = ["admin", "user"];
-	const status = ["active", "resigned"];
+	const state = States.find(state => state.name === permissions?.moderators.state);
+	const LGAs = state ? state.lgas : [];
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
 			name: "",
-			role: "user",
-			status: "active",
-			email: "",
+			gender: "",
+			phone: "",
+			lga: "",
+			ward: "",
+			type: "",
+			position: "",
 		},
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
 		startTransition( async () =>{
-			const result = await createMember(data);
+			// Retrieve state from the store
+			const state = permissions?.moderators.state;
+			
+			console.log(state)
+
+			if (!state) {
+				toast({
+					title: "Failed to create Member",
+					description: "State information is missing.",
+				});
+				return;
+			}
+
+			// Add state to the data
+			const result = await createExecutiveEntry({
+				...data,
+				state,  // Add state to the data
+			});
 			
 			const parsedResult = JSON.parse(result);
 
@@ -99,6 +115,23 @@ export default function MemberForm() {
 
 		
 	}
+	
+	function handleLGAChange(value: string) {
+		const selectedLGA = LGAs.find(lga => lga.name === value);
+		setWards(selectedLGA ? selectedLGA.wards : []);
+		form.setValue("lga", value);
+		form.setValue("ward", ""); // Reset ward selection
+	}
+
+	function handleTypeChange(value: string) {
+		const selectedPositions = Positions.filter(position => position.Level === value);
+		console.log(selectedPositions);
+		
+		setPositions(selectedPositions ? selectedPositions : []);
+		form.setValue("type", value);
+		form.setValue("position", ""); // Reset position selection
+	}
+	
 
 	return (
 		<Form {...form}>
@@ -108,145 +141,198 @@ export default function MemberForm() {
 			>
 				<FormField
 					control={form.control}
-					name="email"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Email</FormLabel>
-							<FormControl>
-								<Input
-									placeholder="email@gmail.com"
-									type="email"
-									{...field}
-									onChange={field.onChange}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="password"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Password</FormLabel>
-							<FormControl>
-								<Input
-									placeholder="******"
-									type="password"
-									onChange={field.onChange}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="confirm"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Confirm Password</FormLabel>
-							<FormControl>
-								<Input
-									placeholder="******"
-									type="password"
-									onChange={field.onChange}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
 					name="name"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Username</FormLabel>
+							<FormLabel>Full Name</FormLabel>
 							<FormControl>
 								<Input
-									placeholder="display name"
+									placeholder="full name"
 									onChange={field.onChange}
 								/>
 							</FormControl>
-							<FormDescription>
-								This is your public display name.
-							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
 				<FormField
 					control={form.control}
-					name="role"
+					name="gender"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Role</FormLabel>
-							<Select
-								onValueChange={field.onChange}
-								defaultValue={field.value}
+						<FormLabel>Gender</FormLabel>
+						<FormControl>
+							<RadioGroup
+							onValueChange={field.onChange}
+							defaultValue={field.value}
+							className="flex flex-col space-y-1"
 							>
+							<FormItem className="flex items-center space-x-3 space-y-0">
 								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder="Select a role" />
-									</SelectTrigger>
+								<RadioGroupItem value="male" />
 								</FormControl>
-								<SelectContent>
-									{roles.map((role, index) => {
-										return (
+								<FormLabel className="font-normal">Male</FormLabel>
+							</FormItem>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+								<RadioGroupItem value="female" />
+								</FormControl>
+								<FormLabel className="font-normal">Female</FormLabel>
+							</FormItem>
+							</RadioGroup>
+						</FormControl>
+						<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+								name="phone"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Phone Number</FormLabel>
+										<FormControl>
+											<Input
+												placeholder="phone number"
+												onChange={field.onChange}
+												value={field.value}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="lga"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>LGA</FormLabel>
+							<FormControl>
+								<Select
+									onValueChange={(value) => {
+										handleLGAChange(value);
+										field.onChange(value);
+									}}
+									defaultValue={field.value}
+								>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select type" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent className="overflow-y-auto max-h-[10rem]">
+										{LGAs.map((type, index) => (
 											<SelectItem
-												value={role}
+												value={type.name}
 												key={index}
 											>
-												{role}
+												{type.name}
 											</SelectItem>
-										);
-									})}
-								</SelectContent>
-							</Select>
-
+										))}
+									</SelectContent>
+								</Select>
+							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
 				<FormField
 					control={form.control}
-					name="status"
+					name="ward"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Status</FormLabel>
+							<FormLabel>Ward</FormLabel>
+							<FormControl>
+							<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}
+								>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select Ward" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent className="overflow-y-auto max-h-[10rem]">
+										{wards.map((ward, index) => (
+											<SelectItem
+												value={ward.name}
+												key={index}
+											>
+												{ward.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="type"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Type</FormLabel>
+							<Select
+								onValueChange={(value) => {
+									handleTypeChange(value);
+									field.onChange(value);
+								}}
+								defaultValue={field.value}
+							>
+								<FormControl>
+									<SelectTrigger>
+										<SelectValue placeholder="Select type" />
+									</SelectTrigger>
+								</FormControl>
+								<SelectContent className="overflow-y-auto max-h-[10rem]">
+									{CongressType.map((type, index) => (
+										<SelectItem
+											value={type.Level}
+											key={index}
+										>
+											{type.Level}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="position"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Position</FormLabel>
 							<Select
 								onValueChange={field.onChange}
 								defaultValue={field.value}
 							>
 								<FormControl>
 									<SelectTrigger>
-										<SelectValue placeholder="Select user status" />
+										<SelectValue placeholder="Select position" />
 									</SelectTrigger>
 								</FormControl>
-								<SelectContent>
-									{status.map((status, index) => {
-										return (
-											<SelectItem
-												value={status}
-												key={index}
-											>
-												{status}
-											</SelectItem>
-										);
-									})}
+								<SelectContent className="overflow-y-auto max-h-[10rem]">
+									{pos.map((position, index) => (
+										<SelectItem
+											value={position.Position}
+											key={index}
+										>
+											{position.Position}
+										</SelectItem>
+									))}
 								</SelectContent>
 							</Select>
-							<FormDescription>
-								status resign mean the user is no longer work
-								here.
-							</FormDescription>
-
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
+
 				<Button
 					type="submit"
 					className="flex items-center w-full gap-2"

@@ -1,13 +1,44 @@
 import React from "react";
 import ListOfModerators from "./ListOfModerators";
-import Table from "@/components/ui/Table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
+import { Card } from "@/components/ui/card";
 
 export default function ModeratorsTable() {
-	const tableHeader = ["Full Name","Email","State","phone"];
-
+	const tableHeader = [
+		{
+			header:"Name",
+			classess:" w-fit"
+		}, 
+		{
+			header:"State",
+			classess:""
+		}, 
+		{
+			header:"Created On",
+			classess:""
+		},  
+		{
+			header:"Status",
+			classess:""
+		},  
+		{
+			header:"",
+			classess:""
+		},  
+	];
 	return (
-		<Table headers={tableHeader}>
-			<ListOfModerators />
+		
+		<Table>
+			<TableHeader>
+				<TableRow>
+					{tableHeader.map((header,index)=>(
+						<TableHead key={index} className={header.classess}>{header.header}</TableHead>
+					))}
+				</TableRow>
+			</TableHeader>
+			<TableBody>
+				<ListOfModerators />
+  			</TableBody>
 		</Table>
 	);
 }

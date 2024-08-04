@@ -1,78 +1,75 @@
 "use server";
 
 import { readUserSession } from "@/lib/actions";
+import { usePermissionsStore } from "@/lib/store/permissions";
 import { createSupbaseAdmin, createSupbaseServerClient } from "@/lib/supabase";
 import { unstable_noStore } from "next/cache";
 import { z } from "zod";
 
-export async function createMember(data:{
-		name: string;
-		role: "user" | "admin";
-		status: "active" | "resigned";
-		email: string;
-		password: string;
-		confirm: string;
+export async function createExecutiveEntry(data: {
+    name: string;
+    gender: string;
+    phone: string;
+    lga: string;
+    ward: string;
+    type: string;
+    position: string;
+	state: string;  
 }) {
-	
-	const {data:userSession} = await readUserSession();
-	if(userSession.session?.user.user_metadata.role !== "admin"){
-		return JSON.stringify({
-			error:{
-				message: "you are not allowed too make this request"
-			}
-		})
-	}
-	const supabase = await createSupbaseAdmin()
+    // Create Supabase client
+    const supabase = await createSupbaseServerClient();
 
-	// create account 
-	const result = await supabase.auth.admin.createUser({
-		email: data.email,
-		password: data.password,
-		email_confirm: true,
-		user_metadata:{
-			role: data.role
-		}
-	})
-	
-	console.log(result);
+	// Fetch user session to get member_id (this example assumes you have a function to get the user session)
+    const { data: userSession, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !userSession?.session?.user?.id) {
+        return JSON.stringify({
+            error: {
+                message: sessionError?.message || "Failed to get user session",
+            },
+        });
+    }
+    const _id = userSession.session.user.id;
 
-	if(result.error?.message){
-		return JSON.stringify(result);
-	}else{
-		const memberResult =  await supabase.from('member').insert({
-			name:data.name,
-			id:result.data.user?.id
-		})
-		if(memberResult.error?.message){
-			return JSON.stringify(memberResult);
-		}else{
-		
-			const permissionResult =  await supabase.from('permissions').insert({
-				role: data.role,
-				member_id: result.data.user?.id,
-				status: data.status
-			})
+    // Insert data into the executive table
+    const { data: executiveResult, error } = await supabase.from('executive').insert({
+        moderator_id: _id ,
+        state: data.state,
+        name: data.name,
+        gender: data.gender,
+        phone: data.phone,
+        lga: data.lga,
+        ward: data.ward,
+        type: data.type,
+        position: data.position,
+    });
 
-			return JSON.stringify(permissionResult)
-		}
+    if (error) {
+        return JSON.stringify({
+            error: {
+                message: error.message,
+            },
+        });
+    }
 
-	}
-
-	// create member
-
-	// create permission
+    return JSON.stringify({
+        data: executiveResult,
+    });
 }
+
 
 export async function updateMemberById(id: string) {
 	console.log("update member");
 }
 
 export async function deleteMemberById(id: string) {}
-export async function readMembers() {
+
+export async function readExcos() {
 
 	unstable_noStore();
 	
 	const supabase = await createSupbaseServerClient();
 
-	return await supabase.from('permissions').select("*,member(*)")
+	return await supabase.from('executive').select("*,moderators(*)")
 }
+
+
