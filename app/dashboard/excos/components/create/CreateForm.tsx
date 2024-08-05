@@ -70,7 +70,6 @@ export default function MemberForm({permissions}:{permissions: any}) {
 			// Retrieve state from the store
 			const state = permissions?.moderators.state;
 			
-			console.log(state)
 
 			if (!state) {
 				toast({
@@ -88,7 +87,6 @@ export default function MemberForm({permissions}:{permissions: any}) {
 			
 			const parsedResult = JSON.parse(result);
 
-			console.log(parsedResult);
 			
 			const error = parsedResult.error;
 
@@ -125,7 +123,6 @@ export default function MemberForm({permissions}:{permissions: any}) {
 
 	function handleTypeChange(value: string) {
 		const selectedPositions = Positions.filter(position => position.Level === value);
-		console.log(selectedPositions);
 		
 		setPositions(selectedPositions ? selectedPositions : []);
 		form.setValue("type", value);

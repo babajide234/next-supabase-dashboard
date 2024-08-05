@@ -72,7 +72,6 @@ export default function MemberForm() {
 			
 			const parsedResult = JSON.parse(result);
 
-			console.log(parsedResult);
 			
 			const error = parsedResult.error;
 

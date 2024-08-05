@@ -34,7 +34,6 @@ export async function createMember(data:{
 		}
 	})
 	
-	console.log(result);
 
 	if(result.error?.message){
 		return JSON.stringify(result);

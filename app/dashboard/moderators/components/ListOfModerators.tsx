@@ -16,7 +16,6 @@ export default async function ListOfModerators() {
 	const user = useUserStore.getState().user;
 	const isAdmin = user?.user_metadata.role === "admin"
 
-  console.log("moderators",permissions);
 
   return (
     <>

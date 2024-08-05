@@ -12,7 +12,6 @@ export default async function Layout({ children }: { children: ReactNode }) {
 	const { data: userSession } = await readUserSession();
 	const permission = await readPermissions();
 
-	console.log("permission:", permission[0])
 	if (!userSession.session) {
 		return redirect("/auth");
 	}

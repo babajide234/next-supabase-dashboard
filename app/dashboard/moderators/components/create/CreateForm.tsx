@@ -43,7 +43,6 @@ export default function CreateForm (){
 			
 			const parsedResult = JSON.parse(result);
 
-			console.log(parsedResult);
 			
 			const error = parsedResult.error;
 

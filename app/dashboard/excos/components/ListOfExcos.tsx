@@ -15,7 +15,7 @@ export default async function ListOfExcos() {
 
 	const user = useUserStore.getState().user;
 	const isAdmin = user?.user_metadata.role === "admin"
-	console.log("executives",data)
+
 	return (
 		<>
 			{data?.map((exco, index) => {

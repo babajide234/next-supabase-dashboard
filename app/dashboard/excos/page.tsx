@@ -17,8 +17,6 @@ export default function Excos() {
 	const isAdmin = user?.user_metadata.role === "moderator"
 	const permissions = usePermissionsStore.getState().permissions;
 
-	console.log("permissions exco",permissions)
-	// console.log(user)
 	return (
 		<Card>
 			<CardHeader className="gap-5 ">
