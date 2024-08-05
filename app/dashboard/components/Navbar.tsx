@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils';
 import SignOut from './SignOut';
 
 
-const Navbar = () => {
+const Navbar = ({isAdmin}:{isAdmin: boolean}) => {
   const [isPending, startTransition] = useTransition();
   const onSubmit = async () => {
   	startTransition(async () => {
@@ -51,18 +51,15 @@ const Navbar = () => {
                     Dashboard
                 </Link>
 
-                {/* <Link
-                    href={'/dashboard/members'}
-                    className="transition-colors text-foreground hover:text-foreground"
-                >
-                    Members
-                </Link> */}
-                <Link
-                    href={'/dashboard/moderators'}
-                    className="transition-colors text-foreground hover:text-foreground"
-                >
-                    Moderators
-                </Link>
+                {
+                    isAdmin &&
+                    <Link
+                        href={'/dashboard/moderators'}
+                        className="transition-colors text-foreground hover:text-foreground"
+                    >
+                        Moderators
+                    </Link>
+                }
                 <Link
                     href={'/dashboard/excos'}
                     className="transition-colors text-foreground hover:text-foreground w-fit"

@@ -1,7 +1,4 @@
 import React, { ReactNode } from "react";
-import SideNav from "./components/SideNav";
-import ToggleSidebar from "./components/ToggleSidebar";
-import MobileSideNav from "./components/MobileSideNav";
 import { readPermissions, readUserSession } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { useUserStore } from "@/lib/store/user";
@@ -11,10 +8,12 @@ import { usePermissionsStore } from "@/lib/store/permissions";
 export default async function Layout({ children }: { children: ReactNode }) {
 	const { data: userSession } = await readUserSession();
 	const permission = await readPermissions();
-
+	
 	if (!userSession.session) {
 		return redirect("/auth");
 	}
+	
+	const isAdmin = userSession.session.user?.user_metadata.role === "admin"
 
 	useUserStore.setState({user: userSession.session.user })
 	usePermissionsStore.setState({ permissions: permission[0]})
@@ -22,7 +21,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
 	return (
 
 		<div className="flex flex-col w-full min-h-screen">
-			<Navbar/>
+			<Navbar isAdmin={isAdmin}/>
 			<main className="flex flex-col flex-1 gap-4 p-4 md:gap-8 md:p-8">
 				{children}
 			</main>
