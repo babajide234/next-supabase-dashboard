@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { useTransition } from "react";
 import { loginWithEmailAndPassword } from "../actions";
 import { AuthTokenResponse } from "@supabase/supabase-js";
+import Image from "next/image";
 
 const FormSchema = z.object({
 	email: z.string().email(),
@@ -62,7 +63,8 @@ export default function AuthForm() {
 	}
 
 	return (
-		<div className="w-96">
+		<div className="flex flex-col items-center gap-5 w-96">
+			<Image src={'/logo.png'} width={150} height={150} alt="Logo"/>
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
@@ -107,12 +109,12 @@ export default function AuthForm() {
 					<Button
 						type="submit"
 						variant="outline"
-						className="w-full flex items-center gap-2"
+						className="flex items-center w-full gap-2"
 					>
 						Login{" "}
 						<AiOutlineLoading3Quarters
 							className={cn("animate-spin", {
-								hidden: true,
+								hidden: !isPending,
 							})}
 						/>
 					</Button>

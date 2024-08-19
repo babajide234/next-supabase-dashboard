@@ -42,7 +42,7 @@ export default function RootLayout({
 			<body className={`${jost.className} antialiased dark:bg-[#09090B]`}>
 				<ThemeProvider
 					attribute="class"
-					defaultTheme="dark"
+					defaultTheme="light"
 					enableSystem
 					disableTransitionOnChange
 				>
