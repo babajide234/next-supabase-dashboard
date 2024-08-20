@@ -4,9 +4,7 @@ import {
     DropdownMenu, 
     DropdownMenuContent, 
     DropdownMenuItem, 
-    DropdownMenuLabel, 
     DropdownMenuSeparator, 
-    DropdownMenuShortcut, 
     DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu'
 
@@ -21,7 +19,6 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { usePermissionsStore } from '@/lib/store/permissions';
 import { ModeratorRecord } from '@/lib/types';
 
 
