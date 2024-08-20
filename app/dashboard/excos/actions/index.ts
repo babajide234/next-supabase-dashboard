@@ -61,7 +61,7 @@ export async function updateMemberById(id: string) {
 	console.log("update member");
 }
 
-export async function deleteExcoById(id: string) {
+export async function deleteExcoById(id: number) {
     const supabase = await createSupbaseServerClient();
 
     const { error } = await supabase

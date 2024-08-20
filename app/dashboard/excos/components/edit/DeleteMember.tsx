@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
 
-export default function DeleteExco({ user_id }:{ user_id:string}){
+export default function DeleteExco({ user_id }:{ user_id:number}){
   
   const [isPending, startTransition] = useTransition();
   const router = useRouter()
