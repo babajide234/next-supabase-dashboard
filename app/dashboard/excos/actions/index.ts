@@ -61,7 +61,21 @@ export async function updateMemberById(id: string) {
 	console.log("update member");
 }
 
-export async function deleteMemberById(id: string) {}
+export async function deleteExcoById(id: string) {
+    const supabase = await createSupbaseServerClient();
+
+    const { error } = await supabase
+        .from('executive') 
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        console.error('Error deleting moderator:', error.message);
+        return null;
+    }
+
+    return { success: true };
+}
 
 export async function readExcos() {
     // Disable client-side data fetching with React

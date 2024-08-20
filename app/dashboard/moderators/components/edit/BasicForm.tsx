@@ -22,10 +22,10 @@ import { useTransition } from "react";
 import { updateStatus } from "../../actions";
 
 const FormSchema = z.object({
-	status: z.enum(["active", "inactive"]),
+	status: z.enum(["active", "resigned"]),
 });
 
-export default function BasicForm({ id, status }: { id: string; status: "active"|"inactive"; })  {
+export default function BasicForm({ id, status }: { id: string; status: "active" | "resigned"; })  {
 
 	const [isPending, startTransition] = useTransition();
 
@@ -95,7 +95,7 @@ export default function BasicForm({ id, status }: { id: string; status: "active"
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="active">Active</SelectItem>
-										<SelectItem value="inactive">Inactive</SelectItem>
+										<SelectItem value="resigned">Resigned</SelectItem>
 									</SelectContent>
 								</Select>
 							</FormControl>

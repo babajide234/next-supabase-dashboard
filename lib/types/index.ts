@@ -29,5 +29,16 @@ export type ModeratorRecord = {
 }
 
 export type ExcoRecord = {
-    
+    id: number;
+  name: string;
+  gender: string;
+  phone: string;
+  lga: string;
+  ward: string;
+  state: string;
+  type: string;
+  position: string;
+  moderator_id: string;
+  created_at: string;
+  moderators: ModeratorDetails;
 }

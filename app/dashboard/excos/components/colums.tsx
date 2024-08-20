@@ -6,6 +6,7 @@ import { ExcoRecord } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Trash,ArrowUpDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import DeleteExco from "./edit/DeleteMember";
 
 
 export const columns: ColumnDef<ExcoRecord>[] = [
@@ -33,7 +34,7 @@ export const columns: ColumnDef<ExcoRecord>[] = [
       accessorKey: "gender",
       header: "Gender",
       cell: info => {
-        const status = info.getValue();
+        const status = info.getValue() as string;
         return (
             <Badge variant={"default"} className={
                 status === 'male' ? "bg-blue-300/80 text-blue-700 hover:text-white": "bg-pink-300/80 text-pink-700 hover:text-white"}>{status}</Badge>
@@ -44,7 +45,7 @@ export const columns: ColumnDef<ExcoRecord>[] = [
         accessorKey: "type",
         header: "Type",
         cell: info => {
-            const type = info.getValue();
+            const type = info.getValue() as string;
             return (
                 <Badge
                     variant="default"
@@ -87,7 +88,7 @@ export const columns: ColumnDef<ExcoRecord>[] = [
     {
       id: "actions",
       cell: ({ row }) => {
-          const moderator = row.original
+          const exco = row.original.id as number;
      
           return (
             <DropdownMenu>
@@ -101,10 +102,7 @@ export const columns: ColumnDef<ExcoRecord>[] = [
                 
 
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center gap-2 text-red-600">
-                    <Trash size={14}/>
-                    Delete
-                </DropdownMenuItem>
+                <DeleteExco user_id={exco}/>
               </DropdownMenuContent>
             </DropdownMenu>
           )

@@ -7,6 +7,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Pencil, Trash,ArrowUpDown } from "lucide-react";
 import EditModerator from "./edit/EditModerator";
 import { Badge } from "@/components/ui/badge";
+import DeleteModerator from "./edit/DeleteModerator";
 
 
 export const columns: ColumnDef<ModeratorRecord>[] = [
@@ -42,7 +43,7 @@ export const columns: ColumnDef<ModeratorRecord>[] = [
       accessorKey: "status",
       header: "Status",
       cell: info => {
-        const status = info.getValue();
+        const status = info.getValue() as string;
         return (
             <Badge variant={ status === 'active' ? "default": "default"} className={status === 'active' ? "bg-green-300/80 text-green-700": "bg-red-300/80 text-red-700"}>{status}</Badge>
         )
@@ -67,10 +68,7 @@ export const columns: ColumnDef<ModeratorRecord>[] = [
                 <EditModerator id={moderator.id} status={moderator.status} isAdmin={true} />
 
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center gap-2 text-red-600">
-                    <Trash size={14}/>
-                    Delete
-                </DropdownMenuItem>
+                <DeleteModerator user_id={moderator.id}/>
               </DropdownMenuContent>
             </DropdownMenu>
           )

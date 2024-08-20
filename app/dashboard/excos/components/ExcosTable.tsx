@@ -10,6 +10,7 @@ export default async function ExcosTable() {
 
 	const user = useUserStore.getState().user;
 	const isAdmin = user?.user_metadata.role === "admin"
+	console.log(data)
 	
 	return (
 		<>

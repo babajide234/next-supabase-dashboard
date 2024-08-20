@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import EditForm from "./EditorForm";
 
-export default function EditModerator({ id, status, isAdmin }: { id: string; status: string; isAdmin: boolean }) {
+export default function EditModerator({ id, status, isAdmin }: { id: string; status: "active" | "resigned"; isAdmin: boolean }) {
 	return (
 		<DailogForm
 			id="update-trigger"

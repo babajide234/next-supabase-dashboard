@@ -67,7 +67,7 @@ export async function readModerators() {
     return data;
 }
 
-export async function updateStatus(moderatorId: string, newStatus: "active" | "inactive") {
+export async function updateStatus(moderatorId: string, newStatus: "active" | "resigned") {
     const supabase = await createSupbaseServerClient();
 
         // Log to ensure the client was created
@@ -115,4 +115,20 @@ export async function updateStatus(moderatorId: string, newStatus: "active" | "i
         message: "Status updated successfully",
         data,
     });
+}
+
+export async function deleteModerator(user_id: string) {
+    const supabase = await createSupbaseServerClient();
+
+    const { error } = await supabase
+        .from('moderators') 
+        .delete()
+        .eq('id', user_id);
+
+    if (error) {
+        console.error('Error deleting moderator:', error.message);
+        return null;
+    }
+
+    return { success: true };
 }

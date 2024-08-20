@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BasicForm from "./BasicForm";
 import { cn } from "@/lib/utils";
 
-export default function EditForm({ id, status, isAdmin }: { id: string; status: string; isAdmin: boolean }) {
+export default function EditForm({ id, status, isAdmin }: { id: string; status: "active" | "resigned"; isAdmin: boolean }) {
 	return (
 		<Tabs defaultValue="basic" className="w-full space-y-5">
 			<TabsList className={cn("grid w-full ", "grid-cols-3")}>
