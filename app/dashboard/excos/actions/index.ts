@@ -64,12 +64,38 @@ export async function updateMemberById(id: string) {
 export async function deleteMemberById(id: string) {}
 
 export async function readExcos() {
+    // Disable client-side data fetching with React
+    unstable_noStore();
 
-	unstable_noStore();
-	
-	const supabase = await createSupbaseServerClient();
+    // Create a Supabase client
+    const supabase = await createSupbaseServerClient();
 
-	return await supabase.from('executive').select("*,moderators(*)")
+    // Get the current user session
+    const { data: { session } } = await supabase.auth.getSession();
+
+    // Check if session exists
+    if (!session) {
+        throw new Error("No user session found");
+    }
+
+    // Get the user's role and ID from the session
+    const userRole = session.user.user_metadata?.role;
+    const moderatorId = session.user.id;
+
+    // If the user is an admin, fetch all executive records
+    if (userRole === 'admin') {
+        return await supabase
+            .from('executive')
+            .select("*, moderators(*)");
+    } 
+    
+    // If the user is a moderator, fetch only the records created by them
+    return await supabase
+        .from('executive')
+        .select("*, moderators(*)")
+        .eq('moderator_id', moderatorId);
 }
+
+
 
 

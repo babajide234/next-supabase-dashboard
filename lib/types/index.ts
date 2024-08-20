@@ -27,3 +27,7 @@ export type ModeratorRecord = {
     id: string;
     moderators: ModeratorDetails;
 }
+
+export type ExcoRecord = {
+    
+}

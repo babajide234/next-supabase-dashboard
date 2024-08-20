@@ -31,7 +31,7 @@ export default function DailogForm({
 		  <SheetHeader>
 			<SheetTitle>{title}</SheetTitle>
 			<SheetDescription>
-			Make changes to your profile here. Click save when
+			Make changes to the profile. Click save when
 			</SheetDescription>
 		  </SheetHeader>
 		  {form}

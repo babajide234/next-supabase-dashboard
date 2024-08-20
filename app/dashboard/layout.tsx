@@ -21,7 +21,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
 	return (
 
 		<div className="flex flex-col w-full min-h-screen">
-			<Navbar isAdmin={isAdmin}/>
+			<Navbar isAdmin={isAdmin} permission={permission[0]}/>
 			<main className="flex flex-col flex-1 gap-4 p-4 md:gap-8 md:p-8">
 				{children}
 			</main>

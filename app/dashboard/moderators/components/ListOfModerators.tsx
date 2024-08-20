@@ -6,7 +6,7 @@ import { ModeratorRecord } from '@/lib/types';
 import { TableCell, TableRow } from '@/components/ui/Table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrashIcon } from 'lucide-react';
+import { Trash2Icon, TrashIcon } from 'lucide-react';
 import EditModerator from './edit/EditModerator';
 
 
@@ -25,11 +25,11 @@ export default async function ListOfModerators() {
               <TableCell>{permission.moderators.state}</TableCell>
               <TableCell>{new Date(permission.created_at).toDateString()}</TableCell>
               <TableCell><Badge variant={'default'}>{permission.status}</Badge></TableCell>
-              <TableCell className="">
+              <TableCell className="flex items-center gap-4 ">
                 {
                   isAdmin &&
-                  <Button variant="destructive">
-                    <TrashIcon />
+                  <Button variant="destructive" size='icon'>
+                    <Trash2Icon />
                   </Button>
                 }
         

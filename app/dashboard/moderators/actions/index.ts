@@ -46,7 +46,7 @@ if(result.error?.message){
     }else{
     
         const permissionResult =  await supabase.from('permissions_mod').insert({
-            role: 'moderators',
+            role: 'moderator',
             moderator_id: result.data.user?.id,
             status: 'active'
         })
@@ -63,6 +63,56 @@ export async function readModerators() {
 	
 	const supabase = await createSupbaseServerClient();
 
-	return await supabase.from('permissions_mod').select('*,moderators(*)')
+	const data =  await supabase.from('permissions_mod').select('*,moderators(*)')
+    return data;
 }
 
+export async function updateStatus(moderatorId: string, newStatus: "active" | "inactive") {
+    const supabase = await createSupbaseServerClient();
+
+        // Log to ensure the client was created
+        if (!supabase) {
+            return JSON.stringify({
+                error: {
+                    message: "Failed to initialize Supabase client",
+                },
+            });
+        }
+    
+        // Log the inputs
+        console.log("Moderator ID:", moderatorId);
+        console.log("New Status:", newStatus);
+
+    // Update the status in the permissions_mod table
+    const { data, error } = await supabase
+        .from('permissions_mod')
+        .update({ status: newStatus })
+        .eq('moderator_id', moderatorId);
+
+        // Log the result and errors
+        console.log("Data:", data);
+        console.log("Error:", error);
+
+    if (error) {
+        return JSON.stringify({
+            error: {
+                message: error.message,
+            },
+        });
+    }
+
+    // Check if the update was successful
+    if (data && data.length === 0) {
+        return JSON.stringify({
+            error: {
+                message: "No record found with the given moderator_id",
+            },
+        });
+    }
+
+
+    return JSON.stringify({
+        message: "Status updated successfully",
+        data,
+    });
+}

@@ -17,32 +17,60 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTransition } from "react";
+import { updateStatus } from "../../actions";
 
 const FormSchema = z.object({
-	name: z.string().min(2, {
-		message: "Name must be at least 2 characters.",
-	}),
+	status: z.enum(["active", "inactive"]),
 });
 
-export default function BasicForm() {
+export default function BasicForm({ id, status }: { id: string; status: "active"|"inactive"; })  {
+
+	const [isPending, startTransition] = useTransition();
+
+	console.log({id,status});
+	
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			name: "",
+		  status: status ,
 		},
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
-		toast({
-			title: "You submitted the following values:",
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">
-						{JSON.stringify(data, null, 2)}
-					</code>
-				</pre>
-			),
-		});
+		startTransition( async () =>{
+			const result = await updateStatus(id, data.status);
+			
+			const parsedResult = JSON.parse(result);
+			const error = parsedResult.error;
+
+			if(error?.message){
+				toast({
+					title: "Failed to Update Moderator Status",
+					description: (
+						<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+							<code className="text-white">
+								{error?.message}
+							</code>
+						</pre>
+					),
+				});
+			}else{
+				document.getElementById("update-trigger")?.click();
+
+				toast({
+					title: "Successfully Updated Moderator Status",
+					description:(
+						<pre>
+							<code>
+								{parsedResult.data}
+							</code>
+						</pre>
+					)
+				});
+			}
+		})
 	}
 
 	return (
@@ -53,12 +81,23 @@ export default function BasicForm() {
 			>
 				<FormField
 					control={form.control}
-					name="name"
+					name="status"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Display Name</FormLabel>
+							<FormLabel>Change Status</FormLabel>
 							<FormControl>
-								<Input placeholder="shadcn" {...field} />
+								<Select
+									onValueChange={(value) => field.onChange(value)}
+									value={field.value}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Status" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="active">Active</SelectItem>
+										<SelectItem value="inactive">Inactive</SelectItem>
+									</SelectContent>
+								</Select>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -66,12 +105,12 @@ export default function BasicForm() {
 				/>
 				<Button
 					type="submit"
-					className="flex gap-2 items-center w-full"
+					className="flex items-center w-full gap-2"
 					variant="outline"
 				>
 					Update{" "}
 					<AiOutlineLoading3Quarters
-						className={cn(" animate-spin", "hidden")}
+						className={cn(" animate-spin", {hidden: !isPending,})}
 					/>
 				</Button>
 			</form>
