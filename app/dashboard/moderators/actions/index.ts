@@ -101,15 +101,6 @@ export async function updateStatus(moderatorId: string, newStatus: "active" | "r
         });
     }
 
-    // Check if the update was successful
-    if (data && data.length === 0) {
-        return JSON.stringify({
-            error: {
-                message: "No record found with the given moderator_id",
-            },
-        });
-    }
-
 
     return JSON.stringify({
         message: "Status updated successfully",

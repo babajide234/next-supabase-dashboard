@@ -13,7 +13,6 @@ export default function DeleteModerator({ user_id }:{ user_id:string}){
 return (
 
     <Alert 
-      id=''
       title=''
       description=''
       form={
