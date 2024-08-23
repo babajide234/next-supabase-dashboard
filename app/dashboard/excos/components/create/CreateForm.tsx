@@ -28,7 +28,7 @@ import {
 import { createExecutiveEntry} from "../../actions";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { cn } from "@/lib/utils";
-import {  useState, useTransition } from "react";
+import {  useEffect, useState, useTransition } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { usePermissionsStore } from "@/lib/store/permissions";
 
@@ -48,8 +48,9 @@ export default function MemberForm({permissions}:{permissions: any}) {
 	const [isPending, startTransition] = useTransition();
 	const [wards, setWards] = useState<any[]>([]);
 	const [pos, setPositions] = useState<any[]>([]);
-
-	const state = States.find(state => state.name === permissions?.moderators.state);
+	const state = States.find(
+		(state) => state.name === permissions?.moderators.state
+	);
 	const LGAs = state ? state.lgas : [];
 
 	const form = useForm<z.infer<typeof FormSchema>>({
@@ -64,6 +65,7 @@ export default function MemberForm({permissions}:{permissions: any}) {
 			position: "",
 		},
 	});
+
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
 		startTransition( async () =>{
@@ -184,8 +186,8 @@ export default function MemberForm({permissions}:{permissions: any}) {
 				/>
 				<FormField
 					control={form.control}
-								name="phone"
-								render={({ field }) => (
+					name="phone"
+					render={({ field }) => (
 									<FormItem>
 										<FormLabel>Phone Number</FormLabel>
 										<FormControl>
@@ -201,104 +203,98 @@ export default function MemberForm({permissions}:{permissions: any}) {
 				/>
 				<FormField
 					control={form.control}
-					name="lga"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>LGA</FormLabel>
-							<FormControl>
-								<Select
-									onValueChange={(value) => {
-										handleLGAChange(value);
-										field.onChange(value);
-									}}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder="Select type" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent className="overflow-y-auto max-h-[10rem]">
-										{LGAs.map((type, index) => (
-											<SelectItem
-												value={type.name}
-												key={index}
-											>
-												{type.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="ward"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Ward</FormLabel>
-							<FormControl>
-							<Select
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder="Select Ward" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent className="overflow-y-auto max-h-[10rem]">
-										{wards.map((ward, index) => (
-											<SelectItem
-												value={ward.name}
-												key={index}
-											>
-												{ward.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
 					name="type"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Type</FormLabel>
-							<Select
-								onValueChange={(value) => {
-									handleTypeChange(value);
-									field.onChange(value);
-								}}
-								defaultValue={field.value}
-							>
-								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder="Select type" />
-									</SelectTrigger>
-								</FormControl>
-								<SelectContent className="overflow-y-auto max-h-[10rem]">
-									{CongressType.map((type, index) => (
-										<SelectItem
-											value={type.Level}
-											key={index}
-										>
-											{type.Level}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-							<FormMessage />
+						<FormLabel>Type</FormLabel>
+						<Select
+							onValueChange={(value) => {
+							handleTypeChange(value);
+							field.onChange(value);
+							}}
+							defaultValue={field.value}
+						>
+							<FormControl>
+							<SelectTrigger>
+								<SelectValue placeholder="Select type" />
+							</SelectTrigger>
+							</FormControl>
+							<SelectContent className="overflow-y-auto max-h-[10rem]">
+							{CongressType.map((type, index) => (
+								<SelectItem value={type.Level} key={index}>
+								{type.Level}
+								</SelectItem>
+							))}
+							</SelectContent>
+						</Select>
+						<FormMessage />
 						</FormItem>
 					)}
 				/>
+
+				{form.watch("type") === "LGA" || form.watch("type") === "Ward" ? (
+					<FormField
+						control={form.control}
+						name="lga"
+						render={({ field }) => (
+						<FormItem>
+							<FormLabel>LGA</FormLabel>
+							<Select
+							onValueChange={(value) => {
+								handleLGAChange(value);
+								field.onChange(value);
+							}}
+							defaultValue={field.value}
+							>
+							<FormControl>
+								<SelectTrigger>
+								<SelectValue placeholder="Select LGA" />
+								</SelectTrigger>
+							</FormControl>
+							<SelectContent className="overflow-y-auto max-h-[10rem]">
+								{LGAs.map((lga, index) => (
+								<SelectItem value={lga.name} key={index}>
+									{lga.name}
+								</SelectItem>
+								))}
+							</SelectContent>
+							</Select>
+							<FormMessage />
+						</FormItem>
+						)}
+					/>
+				) : null}
+
+				{form.watch("type") === "Ward" ? (
+					<FormField
+						control={form.control}
+						name="ward"
+						render={({ field }) => (
+						<FormItem>
+							<FormLabel>Ward</FormLabel>
+							<Select
+								onValueChange={field.onChange}
+								defaultValue={field.value}
+							>
+							<FormControl>
+								<SelectTrigger>
+								<SelectValue placeholder="Select Ward" />
+								</SelectTrigger>
+							</FormControl>
+							<SelectContent className="overflow-y-auto max-h-[10rem]">
+								{wards.map((ward, index) => (
+									<SelectItem value={ward.name} key={index}>
+										{ward.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+							</Select>
+							<FormMessage />
+						</FormItem>
+						)}
+					/>
+				) : null}
+
 				<FormField
 					control={form.control}
 					name="position"

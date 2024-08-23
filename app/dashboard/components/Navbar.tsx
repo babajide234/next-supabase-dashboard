@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import { Button } from '@/components/ui/button'
-import { CircleUser, LogOut, Menu} from 'lucide-react'
+import { CircleUser, LogOut, Menu, User} from 'lucide-react'
 
 import { logout } from "@/app/auth/actions";
 
@@ -21,6 +21,22 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ModeratorRecord } from '@/lib/types';
 
+interface NavLinkProps {
+    href: string;
+    label: string;
+    isActive: boolean;
+}
+
+const NavLink = ({ href, label, isActive }: NavLinkProps) => (
+    <Link
+        href={href}
+        className={`w-fit transition-colors py-1 px-4 rounded-full ${
+            isActive ? 'bg-primary shadow-md text-white' : 'text-foreground'
+        } hover:text-primary`}
+    >
+        {label}
+    </Link>
+);
 
 const Navbar = ({isAdmin,permission}:{isAdmin: boolean,permission:ModeratorRecord}) => {
   const [isPending, startTransition] = useTransition();
@@ -32,7 +48,12 @@ const Navbar = ({isAdmin,permission}:{isAdmin: boolean,permission:ModeratorRecor
   		await logout();
   	});
   };
-  console.log(permission)
+
+  const links = [
+    { href: '/dashboard', label: 'Dashboard' },
+    { href: '/dashboard/moderators', label: 'Moderators', adminOnly: true },
+    { href: '/dashboard/excos', label: 'Executives' },
+  ];
 
 
   return (
@@ -40,38 +61,25 @@ const Navbar = ({isAdmin,permission}:{isAdmin: boolean,permission:ModeratorRecor
         <header className="sticky top-0 flex items-center justify-between h-16 gap-4 px-4 border-b bg-background md:px-6">
             <Link
                 href="#"
-                className="flex items-center gap-2 text-lg font-semibold md:text-base"
+                className="items-center hidden gap-2 text-lg font-semibold  md:flex md:text-base"
             >
                     <Image src="/logo.png" width={40} height={40} alt="logo"/>
                     <span className="sr-only">PDP Excos</span>
             </Link>
             <nav className="flex-col hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-            <Link
-                href="/dashboard"
-                className={`transition-colors py-1 px-4  rounded-full ${
-                    pathname === '/dashboard' ? 'bg-primary shadow-md text-white' : 'text-foreground'
-                } hover:text-primary`}>
-                Dashboard
-            </Link>
+                {links.map((link) => {
+                    if (link.adminOnly && !isAdmin) return null;
 
-            { isAdmin && (
-                <Link
-                    href="/dashboard/moderators"
-                    className={`w-fit transition-colors py-1 px-4  rounded-full ${
-                        pathname === '/dashboard/moderators' ? ' bg-primary shadow-md text-white' : 'text-foreground'
-                    } hover:text-primary`}>
-                    Moderators
-                </Link>
-            )}
-
-            <Link
-                href="/dashboard/excos"
-                className={`w-fit transition-colors py-1 px-4  rounded-full ${
-                    pathname === '/dashboard/excos' ? ' bg-primary shadow-md text-white' : 'text-foreground'
-                } hover:text-primary`}>
-                States
-            </Link>
-        </nav>
+                    return (
+                        <NavLink
+                            key={link.href}
+                            href={link.href}
+                            label={link.label}
+                            isActive={pathname === link.href}
+                        />
+                    );
+                })}
+            </nav>
 
             <Sheet>
                 <SheetTrigger asChild>
@@ -85,15 +93,27 @@ const Navbar = ({isAdmin,permission}:{isAdmin: boolean,permission:ModeratorRecor
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left">
+
                     <nav className="grid gap-6 text-lg font-medium">
-                    <Link
-                        href="#"
-                        className="flex items-center gap-2 text-lg font-semibold"
-                    >
-                        <Image src="/logo.png" width={50} height={50} alt="logo"/>
-                        <span className="sr-only"></span>
-                    </Link>
-                    
+                        <Link
+                            href="#"
+                            className="flex items-center gap-2 text-lg font-semibold"
+                        >
+                            <Image src="/logo.png" width={50} height={50} alt="logo"/>
+                            <span className="sr-only"></span>
+                        </Link>
+                        {links.map((link) => {
+                            if (link.adminOnly && !isAdmin) return null;
+
+                            return (
+                                <NavLink
+                                    key={link.href}
+                                    href={link.href}
+                                    label={link.label}
+                                    isActive={pathname === link.href}
+                                />
+                            );
+                        })}
                     </nav>
                 </SheetContent>
             </Sheet>
@@ -107,16 +127,21 @@ const Navbar = ({isAdmin,permission}:{isAdmin: boolean,permission:ModeratorRecor
                     </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <div className=" px-4 py-2">
-                            <h2 className=" text-xs capitalize font-semibold text-gray-700">{isAdmin ? "Admin" : permission.moderators.state.toLowerCase()}{" "}{!isAdmin && "State"} Account </h2>
+                        <div className="px-4 py-2 ">
+                            <h2 className="text-xs font-semibold text-gray-700 capitalize ">{isAdmin ? "Admin" : permission.moderators.state.toLowerCase()}{" "}{!isAdmin && "State"} Account </h2>
                             {
                                 !isAdmin && (
-                                    <p className=" capitalize text-xs text-gray-400">{permission.moderators.name.toLowerCase()}</p>
+                                    <p className="text-xs text-gray-400 capitalize ">{permission.moderators.name.toLowerCase()}</p>
                                 )
                             }
                         </div> 
                         <DropdownMenuSeparator />
-                        
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/profile" className='flex gap-1.5 w-full'>
+                                <User className="w-4 h-4 mr-2" />
+                                <span>Profile</span>
+                            </Link>
+                        </DropdownMenuItem>
                         <form action={onSubmit}>
                             <button type="submit" className='w-full'>
                                 <DropdownMenuItem>
@@ -128,6 +153,7 @@ const Navbar = ({isAdmin,permission}:{isAdmin: boolean,permission:ModeratorRecor
                                 </DropdownMenuItem>
                             </button>
                         </form>
+                        
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

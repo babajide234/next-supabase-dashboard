@@ -37,8 +37,8 @@ export default async function Dashboard() {
 		<main className="flex flex-col flex-1 gap-4 p-4 md:gap-8 md:p-8">
         <div className="">
           <div className="">
-            <h2 className="text-3xl font-medium text-gray-700 uppercase ">{isAdmin ? "Admin" : permissions?.moderators.state} Board</h2>
-            <p className="text-gray-600 "> Lorem, ipsum dolor sit amet consectetur adipisicing elit. </p>
+            <h2 className="text-3xl font-medium text-gray-700 uppercase ">{isAdmin ? "National Director" : permissions?.moderators.state} </h2>
+            <p className="text-gray-600 ">  </p>
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
@@ -158,7 +158,7 @@ export default async function Dashboard() {
                       </TableBody>
                     </Table>
                   ) : (
-                    <div className=" w-full h-44 flex justify-center items-center text-xl font-medium capitalize text-center text-gray-700">No executive added</div>
+                    <div className="flex items-center justify-center w-full text-xl font-medium text-center text-gray-700 capitalize h-44">No executive added</div>
                   )}
                 </CardContent>
 
@@ -172,7 +172,7 @@ export default async function Dashboard() {
                       <div className="grid gap-2">
                         <CardTitle>States Moderators</CardTitle>
                         <CardDescription>
-                          Recent added Executives.
+                          Recent added Moderators.
                         </CardDescription>
                       </div>
                       <Button asChild size="sm" className="gap-1 ml-auto">

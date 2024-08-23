@@ -13,7 +13,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { cn } from "@/lib/utils";
@@ -29,7 +28,6 @@ export default function BasicForm({ id, status }: { id: string; status: "active"
 
 	const [isPending, startTransition] = useTransition();
 
-	console.log({id,status});
 	
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
