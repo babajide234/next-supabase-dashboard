@@ -20,19 +20,17 @@ export default async function Dashboard() {
   const executiveCounts = await getExecutiveCounts();
   const { data: userSession } = await readUserSession();
   const moderatorStates = await getModeratorStates();
-
   const isAdmin = userSession.session?.user?.user_metadata.role === "admin";
   const { data: mod } = await readModerators();
 
-  const stateExecutives = executiveCounts?.find(item => item.type === 'State')?.total || 0;
-  const lgaExecutives = executiveCounts?.find(item => item.type === 'LGA')?.total || 0;
-  const wardExecutives = executiveCounts?.find(item => item.type === 'Ward')?.total || 0;
+  const stateExecutives = executiveCounts?.find(item => item.type === 'State' || item.type === 'state')?.total || 0;
+  const lgaExecutives = executiveCounts?.find(item => item.type === 'LGA' || item.type === 'lga')?.total || 0;
+  const wardExecutives = executiveCounts?.find(item => item.type === 'Ward' || item.type === 'ward')?.total || 0;
 
   const totalExecutives = stateExecutives + lgaExecutives + wardExecutives;
   const permissions = usePermissionsStore.getState().permissions;
   
-  console.log(permissions)
-  console.log(userSession.session?.user)
+  
 	return (
 		<main className="flex flex-col flex-1 gap-4 p-4 md:gap-8 md:p-8">
         <div className="">

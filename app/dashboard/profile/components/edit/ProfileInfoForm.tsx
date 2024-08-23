@@ -16,8 +16,8 @@ import { usePermissionsStore } from "@/lib/store/permissions";
 
 const FormSchema = z.object({
     name: z.string(),
-    email: z.string().email(),
-});
+    email: z.optional(z.string().email()) 
+})
 
 const ProfileInfoForm = () => {
 

@@ -18,7 +18,23 @@ export async function editprofile(data:any){
         };
     }
 
-    
+    // Replace the following section with your logic to update the profile in the database
+    const { error: updateError } = await supabase
+    .from("moderators") 
+    .update({
+        name: data.name
+    })
+    .eq("id", session.user.id);
+
+    if (updateError) {
+        return {
+            success: false,
+            error: {
+                message: updateError.message || "Failed to update profile.",
+            },
+        };
+    }
+
     return {
         success: true,
         message: "Profile changed successfully",

@@ -28,20 +28,48 @@ import {
 import { createExecutiveEntry} from "../../actions";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { cn } from "@/lib/utils";
-import {  useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { usePermissionsStore } from "@/lib/store/permissions";
+import { useRouter } from "next/navigation";
 
-const FormSchema = z
-	.object({
-		name: z.string().min(2),
-		gender: z.string(),
-		phone: z.string(),
-		lga: z.string(),
-		ward: z.string(),
-		type: z.string(),
-		position: z.string(),
-	})
+
+const FormSchema = z.object({
+    name: z.string()
+        .min(2, { message: "Name must be at least 2 characters long." })
+        .max(50, { message: "Name must be less than 50 characters long." }),
+    gender: z.enum(["male", "female"], {
+        message: "Gender must be either 'male' or 'female'."
+    }),
+    phone: z.string()
+        .length(11, { message: "Phone number must be exactly 11 digits long." })
+        .regex(/^\d+$/, { message: "Phone number must contain only digits." }),
+    type: z.enum(["ward", "lga","state"], {
+        message: "Type must be either 'ward' or 'lga'."
+    }),
+    lga: z.string().optional(), 
+    ward: z.string().optional(),
+    position: z.string().min(1, { message: "Position is required." })
+})
+.refine((data) => {
+    if (data.type === "ward") {
+        return data.lga && data.ward; // Both lga and ward must be filled
+    }
+    if (data.type === "lga") {
+        return data.lga; // Only lga is required
+    }
+    if (data.type === "state") {
+        return true;
+    }
+    return true;
+}, {
+    message: "LGA and Ward are required if type is 'ward'. LGA is required if type is 'lga'.",
+    path: ["type"], // Error path in case of failure
+});
+
+
+type PositionLevel = "ward" | "lga" | "state";
+
+
 
 export default function MemberForm({permissions}:{permissions: any}) {
 
@@ -52,16 +80,17 @@ export default function MemberForm({permissions}:{permissions: any}) {
 		(state) => state.name === permissions?.moderators.state
 	);
 	const LGAs = state ? state.lgas : [];
+	const router = useRouter()
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
 			name: "",
-			gender: "",
+			gender: undefined,
 			phone: "",
 			lga: "",
 			ward: "",
-			type: "",
+			type: undefined,
 			position: "",
 		},
 	});
@@ -84,7 +113,7 @@ export default function MemberForm({permissions}:{permissions: any}) {
 			// Add state to the data
 			const result = await createExecutiveEntry({
 				...data,
-				state,  // Add state to the data
+				state,
 			});
 			
 			const parsedResult = JSON.parse(result);
@@ -109,6 +138,8 @@ export default function MemberForm({permissions}:{permissions: any}) {
 				toast({
 					title: "Successfully Created Member",
 				});
+				router.refresh()
+
 			}
 		})
 
@@ -123,12 +154,14 @@ export default function MemberForm({permissions}:{permissions: any}) {
 		form.setValue("ward", ""); // Reset ward selection
 	}
 
-	function handleTypeChange(value: string) {
-		const selectedPositions = Positions.filter(position => position.Level === value);
-		
+	function handleTypeChange(value: PositionLevel) {
+		const selectedPositions = Positions.filter(position => 
+			position.Level.toLowerCase() === value.toLowerCase()
+		  );
+			  
 		setPositions(selectedPositions ? selectedPositions : []);
 		form.setValue("type", value);
-		form.setValue("position", ""); // Reset position selection
+		form.setValue("position", "");
 	}
 	
 
@@ -208,9 +241,9 @@ export default function MemberForm({permissions}:{permissions: any}) {
 						<FormItem>
 						<FormLabel>Type</FormLabel>
 						<Select
-							onValueChange={(value) => {
-							handleTypeChange(value);
-							field.onChange(value);
+							onValueChange={(value: PositionLevel) => {
+								handleTypeChange(value);
+								field.onChange(value);
 							}}
 							defaultValue={field.value}
 						>
@@ -220,11 +253,11 @@ export default function MemberForm({permissions}:{permissions: any}) {
 							</SelectTrigger>
 							</FormControl>
 							<SelectContent className="overflow-y-auto max-h-[10rem]">
-							{CongressType.map((type, index) => (
-								<SelectItem value={type.Level} key={index}>
-								{type.Level}
-								</SelectItem>
-							))}
+								{CongressType.map((type, index) => (
+									<SelectItem value={type.Level as PositionLevel} key={index}>
+										{type.Level}
+									</SelectItem>
+								))}
 							</SelectContent>
 						</Select>
 						<FormMessage />
@@ -232,7 +265,7 @@ export default function MemberForm({permissions}:{permissions: any}) {
 					)}
 				/>
 
-				{form.watch("type") === "LGA" || form.watch("type") === "Ward" ? (
+				{form.watch("type") === "lga" || form.watch("type") === "ward" ? (
 					<FormField
 						control={form.control}
 						name="lga"
@@ -265,7 +298,7 @@ export default function MemberForm({permissions}:{permissions: any}) {
 					/>
 				) : null}
 
-				{form.watch("type") === "Ward" ? (
+				{form.watch("type") === "ward" ? (
 					<FormField
 						control={form.control}
 						name="ward"

@@ -1,17 +1,14 @@
 "use server";
 
-import { readUserSession } from "@/lib/actions";
-import { usePermissionsStore } from "@/lib/store/permissions";
-import { createSupbaseAdmin, createSupbaseServerClient } from "@/lib/supabase";
+import { createSupbaseServerClient } from "@/lib/supabase";
 import { unstable_noStore } from "next/cache";
-import { z } from "zod";
 
 export async function createExecutiveEntry(data: {
     name: string;
     gender: string;
     phone: string;
-    lga: string;
-    ward: string;
+    lga?: string;
+    ward?: string;
     type: string;
     position: string;
 	state: string;  
