@@ -28,7 +28,7 @@ import {
 import { createExecutiveEntry} from "../../actions";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { cn } from "@/lib/utils";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRouter } from "next/navigation";
 
@@ -82,6 +82,7 @@ export default function MemberForm({isAdmin,permissions}:{isAdmin:boolean, permi
 	const state = States.find(
 		(state) => state.name === permissions?.moderators.state
 	);
+
 	const router = useRouter()
 
 	const form = useForm<z.infer<typeof FormSchema>>({
@@ -92,12 +93,20 @@ export default function MemberForm({isAdmin,permissions}:{isAdmin:boolean, permi
 			phone: "",
 			lga: "",
 			ward: "",
-			state: "",
+			state: isAdmin ? "" : permissions?.moderators.state, 
 			type: undefined,
 			position: "",
 		},
 	});
 
+    // Use effect to populate LGAs when component loads
+    useEffect(() => {
+        if (!isAdmin && permissions?.moderators.state) {
+            const selectedState = States.find((state) => state.name === permissions.moderators.state);
+            const newLGAs = selectedState ? selectedState.lgas : [];
+            setLGAs(newLGAs); // Update LGAs based on the state from permissions
+        }
+    }, [isAdmin, permissions]);
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
 		startTransition( async () =>{
