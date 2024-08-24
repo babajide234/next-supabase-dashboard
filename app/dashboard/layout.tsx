@@ -8,18 +8,23 @@ import UserProvider from "@/context/UserProvider";
 
 export default async function Layout({ children }: { children: ReactNode }) {
 	const { data: userSession } = await readUserSession();
-	const permission = await readPermissions();
+
+
+	if (!userSession?.session) {
+		return redirect("/auth"); // Redirect if there is no session
+	}
+
 	const currentTime = Math.floor(Date.now() / 1000);
-    const isExpired = userSession.session?.expires_at ? userSession?.session.expires_at < currentTime : true;
-
-	if (!userSession || !userSession.session) {
-		return redirect("/auth");
-    }
-
+	const isExpired = userSession.session.expires_at 
+		? userSession.session.expires_at < currentTime 
+		: true;
 
 	if (isExpired) {
-        return redirect('/auth'); 
-    }
+		return redirect('/auth'); // Redirect if the session has expired
+	}
+	
+	const permission = await readPermissions();
+
 	
 	const isAdmin = userSession.session.user?.user_metadata.role === "admin"
 
