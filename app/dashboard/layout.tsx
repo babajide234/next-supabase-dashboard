@@ -11,10 +11,15 @@ export default async function Layout({ children }: { children: ReactNode }) {
 	const permission = await readPermissions();
 	const currentTime = Math.floor(Date.now() / 1000);
     const isExpired = userSession.session?.expires_at ? userSession?.session.expires_at < currentTime : true;
-	
-	if (!userSession.session) {
+
+	if (!userSession || !userSession.session) {
 		return redirect("/auth");
-	}
+    }
+
+
+	if (isExpired) {
+        return redirect('/auth'); 
+    }
 	
 	const isAdmin = userSession.session.user?.user_metadata.role === "admin"
 
