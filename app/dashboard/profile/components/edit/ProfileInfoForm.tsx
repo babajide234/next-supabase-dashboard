@@ -27,7 +27,6 @@ const ProfileInfoForm = () => {
     const permission = usePermissionsStore.getState().permissions;
 
 
-
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -38,6 +37,8 @@ const ProfileInfoForm = () => {
 
     useEffect(() => {
         if (user && permission) {
+            console.log(user)
+            console.log(permission)
             form.reset({
                 name: permission?.moderators?.name || "",
                 email: user?.email || "",

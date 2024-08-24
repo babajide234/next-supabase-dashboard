@@ -48,6 +48,7 @@ const FormSchema = z.object({
     }),
     lga: z.string().optional(), 
     ward: z.string().optional(),
+	state: z.string().optional(),
     position: z.string().min(1, { message: "Position is required." })
 })
 .refine((data) => {
@@ -71,15 +72,16 @@ type PositionLevel = "ward" | "lga" | "state";
 
 
 
-export default function MemberForm({permissions}:{permissions: any}) {
+export default function MemberForm({isAdmin,permissions}:{isAdmin:boolean, permissions: any}) {
 
 	const [isPending, startTransition] = useTransition();
 	const [wards, setWards] = useState<any[]>([]);
 	const [pos, setPositions] = useState<any[]>([]);
+	const [LGAs, setLGAs] = useState<any[]>([]); // Add state for LGAs
+
 	const state = States.find(
 		(state) => state.name === permissions?.moderators.state
 	);
-	const LGAs = state ? state.lgas : [];
 	const router = useRouter()
 
 	const form = useForm<z.infer<typeof FormSchema>>({
@@ -90,6 +92,7 @@ export default function MemberForm({permissions}:{permissions: any}) {
 			phone: "",
 			lga: "",
 			ward: "",
+			state: "",
 			type: undefined,
 			position: "",
 		},
@@ -99,7 +102,7 @@ export default function MemberForm({permissions}:{permissions: any}) {
 	function onSubmit(data: z.infer<typeof FormSchema>) {
 		startTransition( async () =>{
 			// Retrieve state from the store
-			const state = permissions?.moderators.state;
+			const state = isAdmin ? data.state : permissions?.moderators.state;
 			
 
 			if (!state) {
@@ -147,8 +150,20 @@ export default function MemberForm({permissions}:{permissions: any}) {
 		
 	}
 	
+	// Handle state change for admins
+	function handleStateChange(value: string) {
+		const selectedState = States.find((state) => state.name === value);
+		const newLGAs = selectedState ? selectedState.lgas : [];
+		setLGAs(newLGAs); // Update LGAs based on the selected state
+		setWards([]); // Clear wards when state changes
+		form.setValue("state", value); // Set state value in the form
+		form.setValue("lga", ""); // Reset LGA
+		form.setValue("ward", ""); // Reset Ward
+	}
+	
+	// Handle LGA change
 	function handleLGAChange(value: string) {
-		const selectedLGA = LGAs.find(lga => lga.name === value);
+		const selectedLGA = LGAs.find((lga) => lga.name === value);
 		setWards(selectedLGA ? selectedLGA.wards : []);
 		form.setValue("lga", value);
 		form.setValue("ward", ""); // Reset ward selection
@@ -234,6 +249,40 @@ export default function MemberForm({permissions}:{permissions: any}) {
 									</FormItem>
 					)}
 				/>
+
+				{isAdmin && (
+					<FormField
+						control={form.control}
+						name="state"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Select State</FormLabel>
+								<Select
+									onValueChange={(value) => {
+										handleStateChange(value); // Update state and LGAs
+										field.onChange(value);
+									}}
+									defaultValue={field.value}
+								>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select State" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent className="overflow-y-auto max-h-[10rem]">
+										{States.map((state, index) => (
+											<SelectItem value={state.name} key={index}>
+												{state.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				)}
+				
 				<FormField
 					control={form.control}
 					name="type"
@@ -264,6 +313,8 @@ export default function MemberForm({permissions}:{permissions: any}) {
 						</FormItem>
 					)}
 				/>
+
+
 
 				{form.watch("type") === "lga" || form.watch("type") === "ward" ? (
 					<FormField

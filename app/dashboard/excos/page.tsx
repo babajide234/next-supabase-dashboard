@@ -11,7 +11,7 @@ export default function Excos() {
 
 
 	const user = useUserStore.getState().user;
-	const isAdmin = user?.user_metadata.role === "moderator"
+	const isAdmin = user?.user_metadata.role === "moderator" || user?.user_metadata.role === "admin"
 	const permissions = usePermissionsStore.getState().permissions;
 	
 	return (
@@ -22,7 +22,7 @@ export default function Excos() {
 					permissions && isAdmin && (
 						<div className="flex gap-2">
 							<SearchExcos />
-							<CreateExcos permissions={permissions}/>
+							<CreateExcos isAdmin={isAdmin} permissions={permissions}/>
 						</div>
 					)
 				}

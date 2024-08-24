@@ -77,7 +77,7 @@ export default function AuthForm() {
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input placeholder="shadcn" {...field} />
+									<Input placeholder="" {...field} />
 								</FormControl>
 
 								<FormMessage />
@@ -92,7 +92,7 @@ export default function AuthForm() {
 								<FormLabel>Password</FormLabel>
 								<FormControl>
 									<Input
-										placeholder="shadcn"
+										placeholder=""
 										{...field}
 										type="password"
 									/>
