@@ -44,13 +44,15 @@ export default function AuthForm() {
 			const { error } = JSON.parse(
 				await loginWithEmailAndPassword(data)
 			) as AuthTokenResponse;
+			
+			console.log(error)
 
 			if (error) {
 				toast({
 					title: "Fail to login",
 					description: (
 						<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-							<code className="text-white">{error.message}</code>
+							<code className="text-white">{error.code}</code>
 						</pre>
 					),
 				});

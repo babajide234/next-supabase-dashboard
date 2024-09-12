@@ -52,7 +52,7 @@ const Navbar = ({isAdmin,permission}:{isAdmin: boolean,permission:ModeratorRecor
   const links = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/dashboard/moderators', label: 'Moderators', adminOnly: true },
-    { href: '/dashboard/excos', label: 'Executives' },
+    { href: '/dashboard/excos', label: 'Executives',  adminOnly: true },
   ];
 
 
